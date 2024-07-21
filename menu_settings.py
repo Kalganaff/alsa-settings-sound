@@ -6,6 +6,9 @@ from tkinter.ttk import *
 from tkinter import messagebox
 import tkinter as tk
 
+
+
+
 def get_message_sys():
     # Создание главного окна
     # root = tkinter.Tk()
@@ -40,10 +43,14 @@ def save_file():
     messagebox.showinfo("Save File", "Save File selected")
 
 def exit_app():
+    root = tkinter.Tk()
     root.quit()
 
+def delete_text():
+    editor.delete("1.0", END)
 
-
-
+# Фнукция на весь экран
+def fullscreen_att():
+    root.attributes("-fullscreen", True)
 
 

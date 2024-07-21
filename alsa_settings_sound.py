@@ -8,6 +8,7 @@ root = tk.Tk()
 root.title("Настройка звука")
 root.geometry("600x400")  # Устанавливаем размер окна
 
+
 # Создаем меню
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
@@ -23,8 +24,8 @@ file_menu.add_command(label="Выход", command=exit_app)
 
 # Создаем выпадающее меню "Help"
 help_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="Помощь", menu=help_menu)
-help_menu.add_command(label="Информация о системе", command=get_message_sys)
+menu_bar.add_cascade(label="Системная информация", menu=help_menu)
+#help_menu.add_command(label="", command=get_message_sys)
 
 
 
