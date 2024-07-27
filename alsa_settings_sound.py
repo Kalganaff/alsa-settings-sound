@@ -9,14 +9,11 @@ from menu_systeminfo import *
 root = tk.Tk()
 root.title("Настройка звука")
 root.geometry("600x400")  # Устанавливаем размер окна
-
+root.option_add("*tearOff", FALSE)
 
 # Создаем меню
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
-
-#root.attributes("-alpha", 0.5)
-#root.attributes("-topmost", True)
 
 # Создаем выпадающее меню "File"
 file_menu = tk.Menu(menu_bar, tearoff=0)
