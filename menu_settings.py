@@ -25,9 +25,10 @@ def get_message_sys():
     alsa_label = ttk.Label(text=f"Версия ALSA: {alsa_version}")
     sound_card_label = ttk.Label(text=f"Звуковая карта: {sound_card_name}", style="BW.TLabel")
 
-    kernel_label.pack(pady=5)
-    alsa_label.pack(pady=10)
     sound_card_label.pack(pady=10)
+    kernel_label.pack(pady=10)
+    alsa_label.pack(pady=10)
+
 
     # Запуск главного цикла обработки событий
     #root.mainloop()

@@ -2,6 +2,8 @@ import tkinter as tk
 from menu_settings import *
 from tkinter import ttk
 from sysinfo import *
+from menu_systeminfo import *
+
 
 # Создаем основное окно
 root = tk.Tk()
@@ -25,22 +27,8 @@ file_menu.add_command(label="Сохранить", command=save_file)
 file_menu.add_separator()
 file_menu.add_command(label="Выход", command=exit_app)
 
-# Создаем выпадающее меню "Help"
-#help_menu = tk.Menu(menu_bar, tearoff=0)
-help_menu = ttk.Notebook()
-help_menu.pack(expand=True, fill=BOTH)
-
-frame1 = ttk.Frame(help_menu)
-frame1.pack(fill=BOTH, expand=True)
-help_menu.add(frame1, text="Системная информация")
-label = ttk.Label(frame1, text=get_message_sys())
-label.pack()
-
-
-
-#menu_bar.add_cascade(label="Системная информация", menu=help_menu)
-#help_menu.add_radiobutton(label="hfnfnf", command=get_message_sys)
-#help_menu.add_command(label="", command=get_message_sys)
+#Вызов системного меню
+menu_sys()
 
 
 
