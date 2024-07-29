@@ -11,7 +11,7 @@ def alsa_version():
     alsa_label.pack()
 def kernel_label():
     kernel_version = get_kernel_version()
-    kernel_label = ttk.Label(text=f"Версия ядра: {kernel_version}", style="BW.TLabel")
+    kernel_label = ttk.Label(text=f"Версия ядра Linux: {kernel_version}", style="BW.TLabel")
     kernel_label.pack()
 def sound_card_label():
     sound_card_name = get_sound_card_name()
