@@ -2,8 +2,10 @@ import tkinter
 from sysinfo import *
 from tkinter import *
 from tkinter.ttk import *
-from tkinter import messagebox
+from tkinter.messagebox import showinfo, askyesno
 from tkinter import ttk
+from tkinter import messagebox
+
 
 def alsa_version():
     alsa_version = get_alsa_version()
@@ -21,8 +23,13 @@ def new_file():
     messagebox.showinfo("New File", "New File selected")
 
 def open_file():
-    messagebox.showinfo("Open File", "Open File selected")
+    result = askyesno(title="Предупреждение", message="Чтобы изменения вступили в силу, нужно перезагрузить компьютер. Сделать ее сейчас?")
+    if result:
+        showinfo("Результат", "Выполняется перезагрузка")
+        reboot
 
+    else:
+        showinfo("Результат", "Отмена")
 def save_file():
     messagebox.showinfo("Save File", "Save File selected")
 

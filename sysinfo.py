@@ -29,3 +29,6 @@ def get_kernel_version():
         command = "uname -r | cut -d . -f -2 "
         output = test_error(command)
         return output
+
+def reboot():
+    os.system('shutdown -r -t 0')

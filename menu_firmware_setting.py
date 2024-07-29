@@ -1,6 +1,10 @@
 from menu_systeminfo import *
 from tkinter import *
 from tkinter.ttk import *
+from menu_settings import open_file
+
+def click_button():
+    global clicks
 
 def firmware(frames):
     # Вкладка прошивки
@@ -26,6 +30,9 @@ def firmware(frames):
                        text='Опция - 3',
                        value=3,
                        variable=selected)
+    btn = Button(frame,
+                 text="Cохранить",
+                 command=open_file)
 
     lbl.grid(column=0,
              row=0)
@@ -38,3 +45,6 @@ def firmware(frames):
                rely=0.5,
                anchor="w")
 
+    btn.place(relx=0,
+              rely=0.7,
+              anchor="w")
