@@ -31,4 +31,4 @@ def get_kernel_version():
         return output
 
 def reboot():
-    os.system('shutdown -r -t 0')
+    print("Выполняю перезагрузку")
