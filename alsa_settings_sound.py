@@ -1,41 +1,35 @@
 import tkinter as tk
-from menu_settings import *
 from tkinter import ttk
-from sysinfo import *
-from menu_systeminfo import *
+from menu_systeminfo import menu_sys
+from menu_firmware_setting import firmware
+from menu_sound import menu_sound
+from variable import Tabs
+
+class Applications(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Настройка звука")
+        self.geometry("600x400")
+        # Создаем меню
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(expand=True, fill='both')
+        self.frames = {}
+        # Добавляем вкладки
+        self.create_tabs()
+        # Наполняем содержимым
+        self.populate_tabs()
+
+    def create_tabs(self):
+        for tab in Tabs:
+            frame = ttk.Frame(self.notebook)
+            self.notebook.add(frame, text=tab.value)
+            self.frames[tab] = frame
+    def populate_tabs(self):
+        menu_sys(self.frames)
+        menu_sound(self.frames)
+        firmware(self.frames)
 
 
-# Создаем основное окно
-root = tk.Tk()
-root.title("Настройка звука")
-root.geometry("600x400")  # Устанавливаем размер окна
-root.option_add("*tearOff", FALSE)
-
-# Создаем меню
-menu_bar = tk.Menu(root)
-root.config(menu=menu_bar)
-
-# Создаем выпадающее меню "File"
-file_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="Меню", menu=file_menu)
-file_menu.add_command(label="Конфигурация", command=new_file)
-file_menu.add_command(label="Профили", command=open_file)
-file_menu.add_command(label="Сохранить", command=save_file)
-file_menu.add_separator()
-file_menu.add_command(label="Выход", command=exit_app)
-
-#Вызов системного меню
-menu_sys()
-
-
-
-# Настраиваем стиль для ttk
-style = ttk.Style()
-style.configure('TMenu', background='#ffffff', foreground='#000000', relief='flat', padding=5)
-style.configure('TMenuButton', background='#0078d4', foreground='#ffffff', padding=5)
-style.map('TMenuButton', background=[('active', '#005a9e')])
-
-
-
-# Основной цикл обработки событий
-root.mainloop()
+if __name__ == "__main__":
+    app = Applications()
+    app.mainloop()

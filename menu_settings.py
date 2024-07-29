@@ -1,16 +1,11 @@
 import tkinter
 from sysinfo import *
-from tkinter import ttk
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
-import tkinter as tk
+from tkinter import ttk
 
 def alsa_version():
-    # Создание главного окна
-    # root = tkinter.Tk()
-#    style = ttk.Style()
-#    style.configure("BW.TLabel", foreground="black", background="white")
     alsa_version = get_alsa_version()
     alsa_label = ttk.Label(text=f"Версия ALSA: {alsa_version}")
     alsa_label.pack()

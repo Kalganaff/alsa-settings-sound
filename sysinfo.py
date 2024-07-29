@@ -1,6 +1,5 @@
 import os
 import subprocess
-
 # Функция для получения версии ядра
 def get_kernel_version():
     return os.uname().release
