@@ -3,7 +3,7 @@ from variable import Tabs
 from tkinter import ttk
 def menu_sound(frames):
 # Вкладка звукового конфига ---------------------------------
-    frame2 = frames[Tabs.TAB2]
+    frame2 = frames[Tabs.TAB1]
     selected = IntVar()
     selected.set(0)
     selected.set(1)

@@ -25,9 +25,9 @@ class Applications(tk.Tk):
             self.notebook.add(frame, text=tab.value)
             self.frames[tab] = frame
     def populate_tabs(self):
-        menu_sys(self.frames)
         menu_sound(self.frames)
         firmware(self.frames)
+        menu_sys(self.frames)
 
 
 if __name__ == "__main__":
