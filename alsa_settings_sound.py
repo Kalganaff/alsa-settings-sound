@@ -5,6 +5,7 @@ from menu_firmware_setting import firmware
 from menu_sound import menu_sound
 from variable import Tabs
 
+
 class Applications(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -13,6 +14,7 @@ class Applications(tk.Tk):
         # Создаем меню
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(expand=True, fill='both')
+        self.resizable(width=False, height=False)
         self.frames = {}
         # Добавляем вкладки
         self.create_tabs()
