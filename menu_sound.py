@@ -1,6 +1,7 @@
 from menu_systeminfo import *
 from variable import Tabs
 from tkinter import ttk
+from models import *
 def menu_sound(frames):
 # Вкладка звукового конфига ---------------------------------
     frame2 = frames[Tabs.TAB1]
@@ -38,3 +39,4 @@ def menu_sound(frames):
     rad5.place(relx=0, rely=0.40, anchor="w")
     rad6.place(relx=0, rely=0.45, anchor="w")
     btn.place(relx=0, rely=0.8, anchor="w")
+
