@@ -1,4 +1,4 @@
-hd_audio_codec_models = {
+hd_audio_codec_comments = {
     "ALC880": [
         "3stack: 3-разъемный вход сзади и выход для наушников",
         "3stack-digout: 3-разъемный вход сзади, выход для наушников и цифровой выход SPDIF",
