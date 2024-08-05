@@ -2,142 +2,75 @@ from menu_systeminfo import *
 from variable import Tabs
 from tkinter import ttk
 from models import *
-
-def menu_sound1(frames):
-    # Вкладка звукового конфига
-    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
+import tkinter as tk
+class Tooltip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tooltip = None
     
-    style = ttk.Style()
-    style.theme_use("clam")
-    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
-    
-    rely_counter = 0.15
-    relx_counter = 0
 
-    for model, options in hda_codec_mod.items():
-        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
-        lbl2.place(relx=relx_counter, rely=0.1*rely_counter, anchor="w")
-        rely_counter += 0.05
+    def show_tooltip(self, event):
+        if self.tooltip or not self.text:
+            return
+        x = event.x_root + 20
+        y = event.y_root + 20
+        self.tooltip = tk.Toplevel(self.widget)
+        self.tooltip.wm_overrideredirect(True)
+        self.tooltip.wm_geometry(f"+{x}+{y}")
 
-        
-        selected = IntVar()
-        selected.set(1)
-        
-        # Цикл для создания радиокнопок
-        for i, (text, value) in enumerate(options):
-            if i % 2 == 0 and i != 0:
-                rely_counter += 0.05
-                relx_counter += 0.03
+        label = tk.Label(self.tooltip, text=self.text, background="yellow", relief="solid", borderwidth=1, font=("Arial", 10, "normal"))
+        label.pack()
 
-            relx = 0.1 * relx_counter
-            rely = 0.1 * rely_counter
-            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
-            rad.place(relx=relx, rely=rely, anchor="w")
+    def hide_tooltip(self, event):
+        if self.tooltip:
+            self.tooltip.destroy()
+            self.tooltip = None
 
-            rely_counter += 1
-
-        rely_counter = 0
-        relx_counter += 1
-
-
-
-
-def menu_sound2(frames):
-    # Вкладка звукового конфига
-    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
-
-    style = ttk.Style()
-    style.theme_use("clam")
-    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
-
-    row_counter = 0
-    col_counter = 0
-
-    for model, options in hda_codec_mod.items():
-        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
-        lbl2.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=5)
-        row_counter += 1
-
-        selected = IntVar()
-        selected.set(1)
-
-        # Цикл для создания радиокнопок
-        for i, (text, value) in enumerate(options):
-            if i % 2 == 0 and i != 0:
-                row_counter += 1
-                col_counter += 1
-            
-            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
-            rad.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=2)
-            row_counter += 1
-
-        # Сброс счетчиков для следующей модели
-        row_counter += 1
-        col_counter = 0
-
+    def attach(self):
+        self.widget.bind("<Enter>", self.show_tooltip)
+        self.widget.bind("<Leave>", self.hide_tooltip)
 
 def menu_sound(frames):
-    # Вкладка звукового конфига
-    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
-
+    frame2 =  frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
     style = ttk.Style()
     style.theme_use("clam")
     style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
+    canvas = tk.Canvas(frame2)
+    scrollbar = ttk.Scrollbar(frame2, orient=tk.VERTICAL, command=canvas.yview)
+    scrollbar_frame = ttk.Frame(canvas)
 
+
+    scrollbar_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+    canvas.create_window((0, 0), window=scrollbar_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    #размещение виджетов
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     row_counter = 0
-    col_counter = 0
-
-    for index, (model, options) in enumerate(hda_codec_mod.items()):
-        if index % 2 == 0 and index != 0:
-            row_counter = 0
-            col_counter += 1
-
-        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
-        lbl2.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=5)
+    for model, options in hda_codec_mod.items():
+        lbl2 = tk.Label(frame2, text=f"Настройка звуковых карт {model}")
+        lbl2.grid(row=row_counter, column=0, columnspan=2, sticky='w', pady=5)
         row_counter += 1
-
-        selected = IntVar()
+        selected = tk.IntVar()
         selected.set(1)
-
+        # Получаем комментарии для текущей модели
+        comments = hda_codec_com.get(model, [])
         # Цикл для создания радиокнопок
-        for text, value in options:
-            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
-            rad.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=2)
-            row_counter += 1
-
-        row_counter += 1  # Добавляем пустую строку между группами
-
-
-
-def menu_sound3(frames):
-    # Вкладка звукового конфига
-    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
-
-    style = ttk.Style()
-    style.theme_use("clam")
-    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
-
-    row_counter = 0
-    col_counter = 0
-
-    for index, (model, options) in enumerate(hda_codec_mod.items()):
-        if index % 2 == 0 and index != 0:
-            row_counter = 0
-            col_counter += 1
-
-        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
-        lbl2.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=5)
-        row_counter += 1
-
-        selected = IntVar()
-        selected.set(1)
-
-        # Цикл для создания радиокнопок
-        for text, value in options:
-            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
-            rad.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=2)
-            row_counter += 1
-
-        row_counter += 1  # Добавляем пустую строку между группами
-
-
+        for i, (text, value) in enumerate(options):
+            col = i % 2
+            if col == 0 and i != 0:
+                row_counter += 1
+            rad = ttk.Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
+            rad.grid(row=row_counter, column=col, sticky='w', padx=5, pady=2)
+            # Добавляем всплывающую подсказку
+            if i < len(comments):
+                tooltip = Tooltip(rad, comments[i])
+                tooltip.attach()
+        row_counter += 2
