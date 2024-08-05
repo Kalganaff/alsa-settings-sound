@@ -2,41 +2,142 @@ from menu_systeminfo import *
 from variable import Tabs
 from tkinter import ttk
 from models import *
-def menu_sound(frames):
-# Вкладка звукового конфига ---------------------------------
-    frame2 = frames[Tabs.TAB1]
-#    canvas = Canvas(frame2, bg="white", width=520, height=300)
-#    canvas.pack(anchor=CENTER, expand=1)
-    selected = IntVar()
-    selected.set(0)
-    selected.set(1)
+
+def menu_sound1(frames):
+    # Вкладка звукового конфига
+    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
+    
     style = ttk.Style()
     style.theme_use("clam")
-    style.configure("design.TRadiobutton",
-                    foreground='black',
-                    font="helvetika 8",
-                    padding=0,
-                    background="#B2DFDB")
+    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
+    
+    rely_counter = 0.15
+    relx_counter = 0
 
-    lbl2 = Label(frame2, text="Настройка звуковых карт")
-    lbl2 = Label(frame2, text="ALC280")
+    for model, options in hda_codec_mod.items():
+        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
+        lbl2.place(relx=relx_counter, rely=0.1*rely_counter, anchor="w")
+        rely_counter += 0.05
 
-    # Настройка кнопок
-    rad1 = Radiobutton(frame2, text='3stack', value=1, variable=selected, style='design.TRadiobutton')
-    rad2 = Radiobutton(frame2, text='3stack-digout', value=2, variable=selected, style='design.TRadiobutton')
-    rad3 = Radiobutton(frame2, text='5stack', value=3, variable=selected, style='design.TRadiobutton')
-    rad4 = Radiobutton(frame2, text='5stack-digout', value=4, variable=selected, style='design.TRadiobutton')
-    rad5 = Radiobutton(frame2, text='6stack', value=5, variable=selected, style='design.TRadiobutton')
-    rad6 = Radiobutton(frame2, text='6stack-digout', value=6, variable=selected, style='design.TRadiobutton')
-    btn = Button(frame2,
-                 text="Cохранить",
-                 command=save_file)
-    lbl2.place(relx=0, rely=0.15, anchor="w")
-    rad1.place(relx=0, rely=0.20, anchor="w")
-    rad2.place(relx=0, rely=0.25, anchor="w")
-    rad3.place(relx=0, rely=0.30, anchor="w")
-    rad4.place(relx=0, rely=0.35, anchor="w")
-    rad5.place(relx=0, rely=0.40, anchor="w")
-    rad6.place(relx=0, rely=0.45, anchor="w")
-    btn.place(relx=0, rely=0.8, anchor="w")
+        
+        selected = IntVar()
+        selected.set(1)
+        
+        # Цикл для создания радиокнопок
+        for i, (text, value) in enumerate(options):
+            if i % 2 == 0 and i != 0:
+                rely_counter += 0.05
+                relx_counter += 0.03
+
+            relx = 0.1 * relx_counter
+            rely = 0.1 * rely_counter
+            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
+            rad.place(relx=relx, rely=rely, anchor="w")
+
+            rely_counter += 1
+
+        rely_counter = 0
+        relx_counter += 1
+
+
+
+
+def menu_sound2(frames):
+    # Вкладка звукового конфига
+    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
+
+    style = ttk.Style()
+    style.theme_use("clam")
+    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
+
+    row_counter = 0
+    col_counter = 0
+
+    for model, options in hda_codec_mod.items():
+        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
+        lbl2.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=5)
+        row_counter += 1
+
+        selected = IntVar()
+        selected.set(1)
+
+        # Цикл для создания радиокнопок
+        for i, (text, value) in enumerate(options):
+            if i % 2 == 0 and i != 0:
+                row_counter += 1
+                col_counter += 1
+            
+            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
+            rad.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=2)
+            row_counter += 1
+
+        # Сброс счетчиков для следующей модели
+        row_counter += 1
+        col_counter = 0
+
+
+def menu_sound(frames):
+    # Вкладка звукового конфига
+    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
+
+    style = ttk.Style()
+    style.theme_use("clam")
+    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
+
+    row_counter = 0
+    col_counter = 0
+
+    for index, (model, options) in enumerate(hda_codec_mod.items()):
+        if index % 2 == 0 and index != 0:
+            row_counter = 0
+            col_counter += 1
+
+        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
+        lbl2.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=5)
+        row_counter += 1
+
+        selected = IntVar()
+        selected.set(1)
+
+        # Цикл для создания радиокнопок
+        for text, value in options:
+            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
+            rad.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=2)
+            row_counter += 1
+
+        row_counter += 1  # Добавляем пустую строку между группами
+
+
+
+def menu_sound3(frames):
+    # Вкладка звукового конфига
+    frame2 = frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
+
+    style = ttk.Style()
+    style.theme_use("clam")
+    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
+
+    row_counter = 0
+    col_counter = 0
+
+    for index, (model, options) in enumerate(hda_codec_mod.items()):
+        if index % 2 == 0 and index != 0:
+            row_counter = 0
+            col_counter += 1
+
+        lbl2 = Label(frame2, text=f"Настройка звуковых карт {model}")
+        lbl2.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=5)
+        row_counter += 1
+
+        selected = IntVar()
+        selected.set(1)
+
+        # Цикл для создания радиокнопок
+        for text, value in options:
+            rad = Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
+            rad.grid(column=col_counter, row=row_counter, sticky='w', padx=10, pady=2)
+            row_counter += 1
+
+        row_counter += 1  # Добавляем пустую строку между группами
+
 

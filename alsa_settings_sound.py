@@ -14,7 +14,7 @@ class Applications(tk.Tk):
         # Создаем меню
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(expand=True, fill='both')
-        self.resizable(width=False, height=False)
+     #   self.resizable(width=False, height=False)
         self.frames = {}
         # Добавляем вкладки
         self.create_tabs()
