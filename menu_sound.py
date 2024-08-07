@@ -31,52 +31,6 @@ class Tooltip:
         self.widget.bind("<Enter>", self.show_tooltip)
         self.widget.bind("<Leave>", self.hide_tooltip)
 
-def menu_sound121(frames):
-    frame2 =  frames[Tabs.TAB1] # Здесь нужно заменить индекс на нужный вам
-    style = ttk.Style()
-    style.theme_use("clam")
-    style.configure('design1.TRadiobutton', background='#B2DFDB', foreground='black', padding=0)
-    canvas = tk.Canvas(frame2)
-    scrollbar = ttk.Scrollbar(frame2, orient=tk.VERTICAL, command=canvas.yview)
-    scrollbar_frame = ttk.Frame(canvas)
-
-
-    scrollbar_frame.bind(
-        "<Configure>",
-        lambda e: canvas.configure(
-            scrollregion=canvas.bbox("all")
-        )
-    )
-    canvas.create_window((0, 0), window=scrollbar_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
-
-    #размещение виджетов
-    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-    row_counter = 0
-    for model, options in hda_codec_mod.items():
-        lbl2 = tk.Label(frame2, text=f"Настройка звуковых карт {model}")
-        lbl2.grid(row=row_counter, column=0, columnspan=2, sticky='w', pady=5)
-        row_counter += 1
-        selected = tk.IntVar()
-        selected.set(1)
-        # Получаем комментарии для текущей модели
-        comments = hda_codec_com.get(model, [])
-        # Цикл для создания радиокнопок
-        for i, (text, value) in enumerate(options):
-            col = i % 2
-            if col == 0 and i != 0:
-                row_counter += 1
-            rad = ttk.Radiobutton(frame2, text=text, value=value, variable=selected, style='design1.TRadiobutton')
-            rad.grid(row=row_counter, column=col, sticky='w', padx=5, pady=2)
-            # Добавляем всплывающую подсказку
-            if i < len(comments):
-                tooltip = Tooltip(rad, comments[i])
-                tooltip.attach()
-        row_counter += 2
-
-
-
 
 def menu_sound(frames):
     frame2 = frames[Tabs.TAB1]  # Здесь нужно заменить индекс на нужный вам
@@ -130,5 +84,6 @@ def menu_sound(frames):
                 tooltip.attach()
 
         row_counter += 2
+
 
 
