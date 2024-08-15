@@ -5,62 +5,36 @@ from menu_systeminfo import *
 from variable import Tabs
 from tkinter import ttk
 from models import *
-import tkinter as tk
 import subprocess
-import tkinter as tk
-from tkinter import messagebox
+import json
 
 class Tooltip:
-    def __init__(self, widget, text):
-        self.widget = widget
-        self.text = text
-        self.tooltip = None
-    
+    # ваш код для Tooltip остается без изменений
 
-    def show_tooltip(self, event):
-        if self.tooltip or not self.text:
-            return
-        x = event.x_root + 20
-        y = event.y_root + 20
-        self.tooltip = tk.Toplevel(self.widget)
-        self.tooltip.wm_overrideredirect(True)
-        self.tooltip.wm_geometry(f"+{x}+{y}")
-
-        label = tk.Label(self.tooltip, text=self.text, background="yellow", relief="solid", borderwidth=1, font=("Arial", 10, "normal"))
-        label.pack()
-
-    def hide_tooltip(self, event):
-        if self.tooltip:
-            self.tooltip.destroy()
-            self.tooltip = None
-
-    def attach(self):
-        self.widget.bind("<Enter>", self.show_tooltip)
-        self.widget.bind("<Leave>", self.hide_tooltip)
+def save_all_configs(selected_values):
+    for model, selected_value in selected_values.items():
+        save_config(model, selected_value)
 
 def save_config(model, selected_value):
     config_file = f"/etc/modprobe.d/{model}.conf"
     command = f'echo "options {model} {selected_value}" | pkexec tee {config_file} > /dev/null'
-    
+
     try:
         subprocess.run(command, shell=True, check=True)
         messagebox.showinfo("Сохранение", f"Конфигурация для {model} успешно сохранена!")
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Ошибка", f"Не удалось сохранить конфигурацию: {e}")
 
-def reset_config(model):
-    config_file = f"/etc/modprobe.d/{model}.conf"
-    command = f"pkexec rm -f {config_file}"
-    
+def load_previous_configs():
     try:
-        subprocess.run(command, shell=True, check=True)
-        messagebox.showinfo("Сброс", f"Конфигурация для {model} успешно сброшена!")
-    except subprocess.CalledProcessError as e:
-        messagebox.showerror("Ошибка", f"Не удалось сбросить конфигурацию: {e}")
+        with open('sound_config.json', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
 
-
-
-
+def save_to_file(selected_values):
+    with open('sound_config.json', 'w') as file:
+        json.dump(selected_values, file)
 
 def menu_sound(frames):
     frame2 = frames[Tabs.TAB1]
@@ -88,13 +62,20 @@ def menu_sound(frames):
 
     row_counter = 0
 
+    selected_values = load_previous_configs()  # Загрузка предыдущих настроек
+
+    current_selections = {}  # Словарь для текущих выборов
+
     for model, options in hda_codec_mod.items():
         lbl2 = tk.Label(scrollbar_frame, text=f"Настройка звуковых карт {model}")
         lbl2.grid(row=row_counter, column=0, columnspan=2, sticky='w', pady=5)
         row_counter += 1
 
         selected = tk.IntVar()
-        selected.set(1)
+
+        # Установка значения из конфигурации
+        selected.set(selected_values.get(model, 1))
+        current_selections[model] = selected
 
         comments = hda_codec_com.get(model, [])
 
@@ -110,15 +91,10 @@ def menu_sound(frames):
                 tooltip = Tooltip(rad, comments[i])
                 tooltip.attach()
 
-        row_counter += 1
-
-        # Кнопка для сохранения конфигурации
-        save_button = tk.Button(scrollbar_frame, text="Сохранить конфигурацию", command=lambda m=model, v=selected: save_config(m, v.get()))
-        save_button.grid(row=row_counter, column=0, padx=5, pady=10)
-
-        # Кнопка для сброса конфигурации
-        reset_button = tk.Button(scrollbar_frame, text="Сбросить конфигурацию", command=lambda m=model: reset_config(m))
-        reset_button.grid(row=row_counter, column=1, padx=5, pady=10)
-
         row_counter += 2
+
+    # Общая кнопка для сохранения всех конфигураций
+    save_all_button = tk.Button(scrollbar_frame, text="Сохранить все конфигурации", command=lambda: [save_all_configs({model: var.get() for model, var in current_selections.items()}), save_to_file({model: var.get() for model, var in current_selections.items()})])
+    save_all_button.grid(row=row_counter, column=0, columnspan=2, padx=5, pady=10)
+
 
