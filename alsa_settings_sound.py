@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from menu_systeminfo import menu_sys
 from menu_firmware_setting import firmware
-from menu_sound import menu_sound
+from menu_sound import *
 from variable import Tabs
 
 

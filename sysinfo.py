@@ -32,3 +32,5 @@ def get_kernel_version():
 
 def reboot():
     print("Выполняю перезагрузку")
+
+
