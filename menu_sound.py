@@ -9,7 +9,32 @@ import subprocess
 import json
 
 class Tooltip:
-    # ваш код для Tooltip остается без изменений
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tooltip = None
+
+    def show_tooltip(self, event):
+        if self.tooltip or not self.text:
+            return
+        x = event.x_root + 20
+        y = event.y_root + 20
+        self.tooltip = tk.Toplevel(self.widget)
+        self.tooltip.wm_overrideredirect(True)
+        self.tooltip.wm_geometry(f"+{x}+{y}")
+
+        label = tk.Label(self.tooltip, text=self.text, background="yellow", relief="solid", borderwidth=1,
+                         font=("Arial", 10, "normal"))
+        label.pack()
+
+    def hide_tooltip(self, event):
+        if self.tooltip:
+            self.tooltip.destroy()
+            self.tooltip = None
+
+    def attach(self):
+        self.widget.bind("<Enter>", self.show_tooltip)
+        self.widget.bind("<Leave>", self.hide_tooltip)
 
 def save_all_configs(selected_values):
     for model, selected_value in selected_values.items():
