@@ -61,6 +61,37 @@ def save_to_file(selected_values):
     with open('sound_config.json', 'w') as file:
         json.dump(selected_values, file)
 
+
+def save_all_configs(selections):
+    config_file = "/etc/modprobe.d/sound_cards.conf"
+    commands = []
+
+    for model, selected_value in selections.items():
+        if selected_value != 1:  # Пропускаем, если выбрано "Ничего не выбрано"
+            commands.append(f"options {model} {selected_value}")
+
+    if not commands:  # Если нет команд, не сохраняем ничего
+        messagebox.showinfo("Сохранение", "Ничего не выбрано для сохранения.")
+        return
+
+    full_command = 'echo "' + '\n'.join(commands) + f'" | pkexec tee {config_file} > /dev/null'
+
+    try:
+        subprocess.run(full_command, shell=True, check=True)
+        messagebox.showinfo("Сохранение", "Конфигурация успешно сохранена!")
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Ошибка", f"Не удалось сохранить конфигурацию: {e}")
+
+def reset_all_configs(models):
+    try:
+        for model in models:
+            config_file = f"/etc/modprobe.d/{model}.conf"
+            command = f"pkexec rm -f {config_file}"
+            subprocess.run(command, shell=True, check=True)
+        messagebox.showinfo("Сброс", "Все конфигурации успешно сброшены!")
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Ошибка", f"Не удалось сбросить конфигурации: {e}")
+
 def menu_sound(frames):
     frame2 = frames[Tabs.TAB1]
 
@@ -85,11 +116,22 @@ def menu_sound(frames):
     canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+    def on_mouse_wheel(event):
+        if event.delta:
+            canvas.yview_scroll(-1 * int(event.delta / 120), "units")
+        else:
+            canvas.yview_scroll(-1 * int(event.num), "units")
+
+    canvas.bind("<Enter>", lambda e: canvas.bind_all("<MouseWheel>", on_mouse_wheel))
+    canvas.bind("<Leave>", lambda e: canvas.unbind_all("<MouseWheel>"))
+    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))
+    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))
+
     row_counter = 0
 
-    selected_values = load_previous_configs()  # Загрузка предыдущих настроек
+    selected_values = load_previous_configs()
 
-    current_selections = {}  # Словарь для текущих выборов
+    current_selections = {}
 
     for model, options in hda_codec_mod.items():
         lbl2 = tk.Label(scrollbar_frame, text=f"Настройка звуковых карт {model}")
@@ -97,8 +139,6 @@ def menu_sound(frames):
         row_counter += 1
 
         selected = tk.IntVar()
-
-        # Установка значения из конфигурации
         selected.set(selected_values.get(model, 1))
         current_selections[model] = selected
 
@@ -118,8 +158,11 @@ def menu_sound(frames):
 
         row_counter += 2
 
-    # Общая кнопка для сохранения всех конфигураций
+    # Кнопка "Сохранить все конфигурации"
     save_all_button = tk.Button(scrollbar_frame, text="Сохранить все конфигурации", command=lambda: [save_all_configs({model: var.get() for model, var in current_selections.items()}), save_to_file({model: var.get() for model, var in current_selections.items()})])
-    save_all_button.grid(row=row_counter, column=0, columnspan=2, padx=5, pady=10)
+    save_all_button.grid(row=row_counter, column=0, padx=5, pady=10)
 
+    # Кнопка "Сбросить все конфигурации"
+    reset_all_button = tk.Button(scrollbar_frame, text="Сбросить все конфигурации", command=lambda: reset_all_configs(current_selections.keys()))
+    reset_all_button.grid(row=row_counter, column=1, padx=5, pady=10)
 
